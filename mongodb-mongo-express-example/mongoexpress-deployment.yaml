@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongoexpress-deployment
+  labels:
+    app: mongoexpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongoexpress
+  template:
+    metadata:
+      labels:
+        app: mongoexpress
+    spec:
+      containers:
+      - name: mongoexpress
+        image: mongo-express:1.0.2-20-alpine3.19
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME # from secret
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD  # from secret
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+        - name: ME_CONFIG_MONGODB_SERVER    # from configmap
+          valueFrom:
+            configMapKeyRef:
+              name: mongodb-configmap
+              key: databaseurl
+      
+---
+
+#External service
+#Both service and deployment can exist in same file
+apiVersion: v1   
+kind: Service
+metadata:
+  name: mongoexpress-service
+spec:
+  selector:
+    app: mongoexpress
+  type: LoadBalancer # used to mention external service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30000 # port to access from the browser we need this in external service must be between 30000-32767
