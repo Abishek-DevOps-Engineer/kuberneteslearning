@@ -53,12 +53,15 @@ spec:
   rules:
     - http:
         paths:
-        - path: /
+        - path: "/weather"
           pathType: Prefix
           backend:
             service:
               name: weatherappservice
               port:
                 number: 80
+
+
+
 
 
