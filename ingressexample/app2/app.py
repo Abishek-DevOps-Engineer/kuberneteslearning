@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import requests
 
 app = Flask(__name__)
@@ -24,7 +24,12 @@ def get_weather(city: str):
     }
 
 
-@app.route("/weather", methods=["GET", "POST"])
+@app.route("/weather")
+def weather_redirect():
+    return redirect(url_for("index"))
+
+
+@app.route("/", methods=["GET", "POST"])
 def index():
     weather = None
     error = None

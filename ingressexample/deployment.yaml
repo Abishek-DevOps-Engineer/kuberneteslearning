@@ -29,10 +29,10 @@ metadata:
 spec:
   selector:
     app: sample-python-app
-  type: NodePort
+#  type: NodePort
   ports:
     - protocol: TCP
       port: 80
       targetPort: 5000
-      nodePort: 30002
+#      nodePort: 30002
 
